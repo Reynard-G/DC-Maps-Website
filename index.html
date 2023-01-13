@@ -28,9 +28,11 @@
             maxZoom: 6,
             noWrap: true,
             unloadInvisibleTiles: true,
-            reuseTiles: true,
-            attribution: 'Reveille Map'
+            reuseTiles: true
         }).addTo(redmontMap);
+
+        // Remove leaflet attribution/credit (Cleaner look)
+        redmontMap.attributionControl.setPrefix(false);
     </script>
 </body>
 
