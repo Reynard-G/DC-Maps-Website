@@ -8,11 +8,20 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <link rel="icon" type="image/png" href="/images/Dept_Commerce.png">
+
+    <!-- Discord Website Embed -->
+    <title>Website Name</title>
+    <meta content="MilkLegend | DC Maps" property="og:title" />
+    <meta content="A website hosting different types of maps for DemocracyCraft." property="og:description" />
+    <meta content="https://maps.milklegend.xyz/" property="og:url" />
+    <meta content="https://milklegend.xyz/map/images/democracycraft.flat.reduced.webp" property="og:image" />
+    <meta content="#2F3136" data-react-helmet="true" name="theme-color" />
 </head>
 
 <body>
     <div id="map"></div>
     <script>
+        // Create the map along with the tile layer
         var redmontMap = L.map('map').setView([0, -60], 6);
         L.tileLayer('images/Redmont/{z}/{x}/{y}.png', {
             minZoom: 2,
