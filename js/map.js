@@ -2,14 +2,15 @@
 var redmontMap = L.tileLayer('../images/Redmont/{z}/{x}/{y}.png', {
     minZoom: 2,
     maxZoom: 6,
-    noWrap: true,
+    bounds: [[84.9901001802348, -172.99072265625003], [-64.47279382008165, 91.38427734375001]],
+noWrap: true,
     unloadInvisibleTiles: true,
-    reuseTiles: true
+        reuseTiles: true
 });
 
 // Set the view when loaded in to be [-1, -60]
 const map = L.map('map', {
-    center: [84, -158],
+    center: [84, -165],
     zoom: 6,
     layers: [redmontMap],
     attributionControl: false
