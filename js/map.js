@@ -34,7 +34,7 @@ var data = (function () {
 // Convert the x and z coordinates to lat and lng, the map is 12032x12032 and minecraft world is 6000x6000
 function xy(x, z) {
     //let layerPoint = map.containerPointToLayerPoint([x * 2, z * 2]);
-    return map.containerPointToLatLng([(x * 2) + 690, (z * 2) + 375]);
+    return map.containerPointToLatLng([(x * 2) + 970, (z * 2) + 375]);
 }
 // Edit the data in "data" to convert the x and z coordinates to lat and lng
 let newCoords;
