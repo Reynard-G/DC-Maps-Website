@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     width: 100%;
     overflow: hidden;
@@ -6,7 +7,54 @@ html, body {
     margin: 0;
 }
 
-#map { 
-    height: 100%; 
+#map {
+    height: 100%;
     width: auto;
+}
+
+#btn {
+    background: url(../images/icons/map.png) no-repeat;
+    background-size: 100%;
+    width: 50px;
+    height: 50px;
+    border: 0px;
+    border-radius: 20%;
+    outline: rgba(153, 153, 153, .5);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    cursor: pointer;
+    transition: outline 0.1s linear;
+}
+
+#btn:hover {
+    border: 0px;
+    border-radius: 20%;
+    outline: 3px solid rgba(153, 153, 153, .5);
+}
+
+/* Style the radio buttons and checkboxes with color */
+.leaflet-control-layers-selector {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+}
+
+.leaflet-touch .leaflet-control-zoom-in,
+.leaflet-touch .leaflet-control-zoom-out {
+    text-indent: 1px;
+    background-color: #2b2b2b;
+    border: 1px solid #2b2b2b;
+    border-radius: 2px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    color: #fff;
+    font-size: 18px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    text-decoration: none;
+    width: 26px;
 }
