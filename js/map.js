@@ -10,7 +10,7 @@ noWrap: true,
 
 // Set the view when loaded in to be [-1, -60]
 const map = L.map('map', {
-    center: [84, -165],
+    center: [84, -158],
     zoom: 6,
     layers: [redmontMap],
     attributionControl: false
