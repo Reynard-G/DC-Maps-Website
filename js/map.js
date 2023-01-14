@@ -3,49 +3,48 @@ var redmontMap = L.tileLayer('../images/Redmont/{z}/{x}/{y}.png', {
     minZoom: 2,
     maxZoom: 6,
     bounds: [[84.9901001802348, -172.99072265625003], [-64.47279382008165, 91.38427734375001]],
-noWrap: true,
+    noWrap: true,
     unloadInvisibleTiles: true,
-        reuseTiles: true
+    reuseTiles: true
 });
 
 // Set the view when loaded in to be [-1, -60]
 const map = L.map('map', {
-    center: [84, -158],
     zoom: 6,
     layers: [redmontMap],
     attributionControl: false
-}).flyTo([-1, -60]);
+}).setView([180, -180]).flyTo([-1, -60]);
 
 // Create the heatmap layer
-// Get the data from the JSON file
+// Get the data from the txt file
 var data = (function () {
-    var json = null;
+    var txt = null;
     $.ajax({
         'async': false,
         'global': false,
-        'url': "../data/heatmaps/Chestshop Heatmap.json",
+        'url': "../data/heatmaps/Chestshop Heatmap.txt",
         'dataType': "json",
         'success': function (data) {
-            json = data;
+            txt = data;
         }
     });
-    return json;
+    return txt;
 })();
 
 // Convert the x and z coordinates to lat and lng, the map is 12032x12032 and minecraft world is 6000x6000
 function xy(x, z) {
-    let layerPoint = map.containerPointToLayerPoint([x * 2, z * 2]);
-    return map.layerPointToLatLng([layerPoint.x, layerPoint.y]);
+    //let layerPoint = map.containerPointToLayerPoint([x * 2, z * 2]);
+    return map.containerPointToLatLng([(x * 2) + 690, (z * 2) + 375]);
 }
 // Edit the data in "data" to convert the x and z coordinates to lat and lng
 let newCoords;
 for (var i = 0; i < data.length; i++) {
-    newCoords = xy(data[i].x, data[i].z);
-    data[i] = {
-        x: newCoords.lat,
-        z: newCoords.lng,
-        value: 1
-    };
+    newCoords = xy(data[i][0], data[i][1]);
+    data[i] = [
+        newCoords.lat,
+        newCoords.lng,
+        .05
+    ];
 }
 
 var cfg = {
@@ -58,14 +57,7 @@ var cfg = {
     valueField: 'value'
 };
 
-var heatmapLayer = new HeatmapOverlay(cfg);
-heatmapLayer.setData(
-    {
-        max: 100000,
-        data: data
-    }
-);
-
+var heatmapLayer = L.heatLayer(data, { minOpacity: .05, max: .5, radius: 20 }).addTo(map);
 var baseMaps = {
     "<img src='images/icons/logo.jpg' width = 25 />": redmontMap
 };
