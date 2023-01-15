@@ -1,7 +1,18 @@
-// Create the map along with the tile layer
-var redmontMap = L.tileLayer('../images/Redmont/{z}/{x}/{y}.png', {
-    minZoom: 2,
+// Create the maps along with the tile layer
+var redmontMap = L.tileLayer('../images/Leaflet Maps/Redmont/{z}/{x}/{y}.png', {
+    minZoom: 0,
     maxZoom: 6,
+    maxNativeZoom: 6,
+    bounds: [[84.9901001802348, -172.99072265625003], [-64.47279382008165, 91.38427734375001]],
+    noWrap: true,
+    unloadInvisibleTiles: true,
+    reuseTiles: true
+});
+
+var redmontHeatMap = L.tileLayer('../images/Leaflet Maps/Redmont Heatmap/{z}/{x}/{y}.png', {
+    minZoom: 2,
+    maxZoom: 9,
+    maxNativeZoom: 6,
     bounds: [[84.9901001802348, -172.99072265625003], [-64.47279382008165, 91.38427734375001]],
     noWrap: true,
     unloadInvisibleTiles: true,
@@ -17,7 +28,7 @@ const map = L.map('map', {
 
 // Create the heatmap layer
 // Get the data from the txt file
-var data = (function () {
+/*var data = (function () {
     var txt = null;
     $.ajax({
         'async': false,
@@ -34,7 +45,7 @@ var data = (function () {
 // Convert the x and z coordinates to lat and lng, the map is 12032x12032 and minecraft world is 6000x6000
 function xy(x, z) {
     //let layerPoint = map.containerPointToLayerPoint([x * 2, z * 2]);
-    return map.containerPointToLatLng([(x * 2) + 970, (z * 2) + 375]);
+    return map.containerPointToLatLng([(x * 2) + 970, (z * 2) + 400]);
 }
 // Edit the data in "data" to convert the x and z coordinates to lat and lng
 let newCoords;
@@ -57,13 +68,14 @@ var cfg = {
     valueField: 'value'
 };
 
-var heatmapLayer = L.heatLayer(data, { minOpacity: .05, max: .5, radius: 20 }).addTo(map);
+var heatmapLayer = L.heatLayer(data, { minOpacity: .05, max: .5, radius: 20 }).addTo(map);*/
 var baseMaps = {
-    "<img src='images/icons/logo.jpg' width = 25 />": redmontMap
+    "<img src='images/icons/logo.jpg' width = 25 />": redmontMap,
+    "<img src='images/icons/block_world_heat.svg' width = 25 />": redmontHeatMap
 };
 
 var overlayMaps = {
-    "<img src='images/icons/block_world_heat.svg' width = 25 />": heatmapLayer
+
 };
 
 var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
