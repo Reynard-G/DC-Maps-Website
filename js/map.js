@@ -1,81 +1,72 @@
-// Create the maps along with the tile layer
-var redmontMap = L.tileLayer('../images/Leaflet Maps/Redmont/{z}/{x}/{y}.png', {
-    minZoom: 0,
-    maxZoom: 6,
-    maxNativeZoom: 6,
-    bounds: [[84.9901001802348, -172.99072265625003], [-64.47279382008165, 91.38427734375001]],
-    noWrap: true,
-    unloadInvisibleTiles: true,
-    reuseTiles: true
-});
+const worldtomap = [2.0, 0.0, -1.2246467991473532E-16, -1.2246467991473532E-16, 0.0, -2.0, 0.0, 1.0, 0.0];
+const maptoworld = [0.5, -3.061616997868383E-17, 0.0, 0.0, 0.0, 1.0, -3.061616997868383E-17, -0.5, 0.0];
 
-var redmontHeatMap = L.tileLayer('../images/Leaflet Maps/Redmont Heatmap/{z}/{x}/{y}.png', {
-    minZoom: 2,
-    maxZoom: 9,
-    maxNativeZoom: 6,
-    bounds: [[84.9901001802348, -172.99072265625003], [-64.47279382008165, 91.38427734375001]],
-    noWrap: true,
-    unloadInvisibleTiles: true,
-    reuseTiles: true
-});
+function fromLocationToLatLng(location, tilescale, mapzoomout) {
+    var lat = worldtomap[3] * location.x + worldtomap[4] * location.y + worldtomap[5] * location.z + 318,
+        lng = worldtomap[0] * location.x + worldtomap[1] * location.y + worldtomap[2] * location.z;
+
+    return new L.LatLng(
+        -(((128 << tilescale) - lat) / (1 << mapzoomout))
+        , lng / (1 << mapzoomout)
+        , location.y
+    );
+}
+
+function fromLatLngToLocation(latlng, y, tilescale, mapzoomout) {
+    var lat = (128 << tilescale) + latlng.lat * (1 << mapzoomout),
+        lng = latlng.lng * (1 << mapzoomout),
+        x = maptoworld[0] * lng + maptoworld[1] * lat + maptoworld[2] * y,
+        z = maptoworld[6] * lng + maptoworld[7] * lat + maptoworld[8] * y + 159;
+
+    return { x: Math.round(x), y: Math.round(y), z: Math.round(z) };
+}
 
 // Set the view when loaded in to be [-1, -60]
+const spawn = fromLocationToLatLng({ x: 2725, y: 64, z: 4153 }, 1, 6);
 const map = L.map('map', {
+    crs: L.CRS.Simple,
     zoom: 6,
-    layers: [redmontMap],
     attributionControl: false
-}).setView([180, -180]).flyTo([-1, -60]);
+}).setView([0, 0]).flyTo([spawn.lat, spawn.lng], 6);
 
-// Create the heatmap layer
-// Get the data from the txt file
-/*var data = (function () {
-    var txt = null;
-    $.ajax({
-        'async': false,
-        'global': false,
+
+// Create the maps along with the tile layer
+const bounds = fromLocationToLatLng({ x: 6000, y: 64, z: 6000 }, 1, 6);
+var redmontMap = L.tileLayer('../images/Leaflet Maps/Redmont/{z}/{x}/{y}.png', {
+    minZoom: 0,
+    maxZoom: 8,
+    bounds: [[0, 0], [bounds.lat, bounds.lng]],
+    maxNativeZoom: 6,
+    noWrap: true,
+    unloadInvisibleTiles: true,
+    reuseTiles: true
+}).addTo(map);
+
+// Get the data from the txt file and convert the x and z coordinates to lat and lng
+async function getHeatmapData() {
+    var txt = await $.ajax({
         'url': "../data/heatmaps/Chestshop Heatmap.txt",
         'dataType': "json",
-        'success': function (data) {
-            txt = data;
-        }
     });
-    return txt;
+
+    return txt.map(position => {
+        const coords = fromLocationToLatLng({ x: position[0], y: 64, z: position[1] }, 1, 6);
+        return [coords.lat, coords.lng, .01];
+    });
+};
+
+(async function () {
+    const data = await getHeatmapData();
+    
+    var heatmapLayer = L.heatLayer(data, { minOpacity: .05, max: .5, radius: 20 });
+
+    var baseMaps = {
+        "<img src='images/icons/logo.jpg' width = 25 />": redmontMap,
+    };
+
+    var overlayMaps = {
+        "<img src='images/icons/block_world_heat.svg' width = 25 />": heatmapLayer
+    };
+
+    L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
 })();
-
-// Convert the x and z coordinates to lat and lng, the map is 12032x12032 and minecraft world is 6000x6000
-function xy(x, z) {
-    //let layerPoint = map.containerPointToLayerPoint([x * 2, z * 2]);
-    return map.containerPointToLatLng([(x * 2) + 970, (z * 2) + 400]);
-}
-// Edit the data in "data" to convert the x and z coordinates to lat and lng
-let newCoords;
-for (var i = 0; i < data.length; i++) {
-    newCoords = xy(data[i][0], data[i][1]);
-    data[i] = [
-        newCoords.lat,
-        newCoords.lng,
-        .05
-    ];
-}
-
-var cfg = {
-    "radius": 2,
-    "maxOpacity": .6,
-    "scaleRadius": true,
-    "useLocalExtrema": true,
-    latField: 'x',
-    lngField: 'z',
-    valueField: 'value'
-};
-
-var heatmapLayer = L.heatLayer(data, { minOpacity: .05, max: .5, radius: 20 }).addTo(map);*/
-var baseMaps = {
-    "<img src='images/icons/logo.jpg' width = 25 />": redmontMap,
-    "<img src='images/icons/block_world_heat.svg' width = 25 />": redmontHeatMap
-};
-
-var overlayMaps = {
-
-};
-
-var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
