@@ -45,7 +45,7 @@ var redmontMap = L.tileLayer('../images/Leaflet Maps/Redmont/{z}/{x}/{y}.png', {
 // Get the data from the txt file and convert the x and z coordinates to lat and lng
 async function getHeatmapData() {
     var txt = await $.ajax({
-        'url': "../data/heatmaps/Chestshop Heatmap.txt",
+        'url': "data/heatmaps/Chestshop Heatmap.txt",
         'dataType': "json",
     });
 
@@ -64,9 +64,11 @@ async function getHeatmapData() {
         "<img src='images/icons/logo.jpg' width = 25 />": redmontMap,
     };
 
-    var overlayMaps = {
-        "<img src='images/icons/block_world_heat.svg' width = 25 />": heatmapLayer
+    var groupedOverlays = {
+        "<font size='+1'>Heatmaps</font>": {
+            "<img src='images/icons/block_world_heat.svg' width = 25 />": heatmapLayer
+        }
     };
 
-    L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+    L.control.groupedLayers(baseMaps, groupedOverlays, { collapsed: false }).addTo(map);
 })();
