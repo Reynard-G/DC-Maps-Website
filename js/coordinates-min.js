@@ -1,0 +1,1 @@
+map.on("mousemove",function(n){const o=fromLatLngToLocation(n.latlng,64,1,6);document.getElementById("coordinates").innerHTML=`X: ${o.x} Y: ${o.y} Z: ${o.z}`}),map.on("mouseout",function(){document.getElementById("coordinates").innerHTML="X: ---- Y: -- Z: ----"});
