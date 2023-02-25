@@ -20,6 +20,7 @@ body {
 #map {
     height: 100%;
     width: auto;
+    cursor: default;
 }
 
 #coordinates {
