@@ -5,7 +5,7 @@ const mapzoomout = 6;
 
 function fromLocationToLatLng(location, tilescale, mapzoomout) {
     var lat = worldtomap[3] * location.x + worldtomap[4] * location.y + worldtomap[5] * location.z + 248,
-        lng = worldtomap[0] * location.x + worldtomap[1] * location.y + worldtomap[2] * location.z + 4;
+        lng = worldtomap[0] * location.x + worldtomap[1] * location.y + worldtomap[2] * location.z + 6;
 
     return new L.LatLng(
         -(((128 << tilescale) - lat) / (1 << mapzoomout))
@@ -17,7 +17,7 @@ function fromLocationToLatLng(location, tilescale, mapzoomout) {
 function fromLatLngToLocation(latlng, y, tilescale, mapzoomout) {
     var lat = (128 << tilescale) + latlng.lat * (1 << mapzoomout),
         lng = latlng.lng * (1 << mapzoomout),
-        x = maptoworld[0] * lng + maptoworld[1] * lat + maptoworld[2] * y - 2,
+        x = maptoworld[0] * lng + maptoworld[1] * lat + maptoworld[2] * y - 3,
         z = maptoworld[6] * lng + maptoworld[7] * lat + maptoworld[8] * y + 124;
 
     return { x: x, y: y, z: z };
