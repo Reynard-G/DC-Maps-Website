@@ -44,9 +44,9 @@ var redmontMap = L.tileLayer('../images/Leaflet Maps/Redmont/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Get the data from the txt file and convert the x and z coordinates to lat and lng
-async function getHeatmapData() {
+async function getHeatmapData(fileName) {
     var txt = await $.ajax({
-        'url': "data/heatmaps/Chestshop Heatmap.txt",
+        'url': `data/heatmaps/${fileName}`,
         'dataType': "json",
     });
 
@@ -57,17 +57,19 @@ async function getHeatmapData() {
 };
 
 (async function () {
-    const data = await getHeatmapData();
-    
-    var heatmapLayer = L.heatLayer(data, { minOpacity: .05, max: .5, radius: 20 });
+    const januaryData = await getHeatmapData("January 2023 Heatmap.txt");
+    const aprilData = await getHeatmapData("April 2023 Heatmap.txt");
+    var janHeatmapLayer = L.heatLayer(januaryData, { minOpacity: .05, max: .5, radius: 20 });
+    var aprHeatmapLayer = L.heatLayer(aprilData, { minOpacity: .05, max: .5, radius: 20 });
 
     var baseMaps = {
         "<img src='images/icons/logo.jpg' width = 25 />": redmontMap,
     };
 
     var groupedOverlays = {
-        "<font size='+1'>Heatmaps</font>": {
-            "<img src='images/icons/block_world_heat.svg' width = 25 />": heatmapLayer
+        "<font size='+2'>Heatmaps</font>": {
+            "<font size='+1'>January 2023</font>": janHeatmapLayer,
+            "<font size='+1'>April 2023</font>": aprHeatmapLayer,
         }
     };
 
